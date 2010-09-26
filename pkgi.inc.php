@@ -103,8 +103,8 @@ class Pkgi
             $this->pkgi_log("--- Instanciation des templates\n");
             $this->write_tpl_instance();
             
-            $this->pkgi_log("--- Exécution des scripts de post-build\n");
-            $this->hook_post_build();
+            $this->pkgi_log("--- Exécution des scripts postinst\n");
+            $this->hook_postinst();
 
             $this->pkgi_log("* Votre application ".$this->APPNAME." est prête avec les modules : ".implode(',',$this->MODULES)."\n");
             $this->pkgi_log("* Les paramètres ont été sauvegardés dans : ".realpath($this->env_path)."\n");
@@ -155,7 +155,7 @@ class Pkgi
         // si rien n'a ete trouve alors on demande a l'utilisateur d'entrer des modules au clavier
         $ask = false;
         while (count($this->MODULES) == 0) {
-            $prompt = "Entrez le nom des modules séparés par des virgules que vous voulez activer dans votre application\nparmis les modules suivants ".implode(',',$this->MODULES_LIST)." : ";
+            $prompt = "Entrez le nom des modules séparés par des virgules que vous voulez activer dans votre application parmis les modules suivants ".implode(',',$this->MODULES_LIST)." : ";
             $this->MODULES = $this->_filter_valide_modules(explode(',',readline($prompt)));
             $ask = true;
         }
@@ -173,7 +173,7 @@ class Pkgi
         }
     }
 
-    function hook_post_build()
+    function hook_postinst()
     {
         // construit une liste des scripts de post build a exécuter
         $postbuild = array();
@@ -188,7 +188,7 @@ class Pkgi
             file_put_contents($ini_path,$output);
       
             $ini_data = parse_ini_file($ini_path);
-            foreach(array('post-build') as $field) {
+            foreach(array('postinst') as $field) {
                 //$postbuild[$m][$field] = array();
                 if (isset($ini_data[$field]) && is_array($ini_data[$field])) {
                     foreach($ini_data[$field] as $v) {
